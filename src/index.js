@@ -1,7 +1,10 @@
 import express from 'express';
+import { getTasks } from './controller/tasksController.js';
 
 const app = express();
 const port = 3000;
+
+app.get('/tasks', getTasks);
 
 app.get('/', (req, res) => {
     res.send('Mini Team Task Manager API is running');
