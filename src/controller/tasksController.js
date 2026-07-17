@@ -1,4 +1,4 @@
-import { getAllTasks, getTaskById } from "../service/tasksService.js";
+import { getAllTasks, getTaskById, createTaskFromTitle } from "../service/tasksService.js";
 
 export const getTasks = async (req, res) => {
     const tasks = await getAllTasks();
@@ -14,4 +14,11 @@ export const getTask = async (req, res) => {
     }
 
     res.status(200).json(task);
+};
+
+export const createTask = async (req, res) => {
+    const {title} = req.body;
+    
+    const task = await createTaskFromTitle(title);
+    res.status(201).json(task);
 };

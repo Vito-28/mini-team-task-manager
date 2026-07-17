@@ -8,3 +8,7 @@ export const findTaskById = async (id) => {
     const task = tasks.find(t => t.id === Number(id));
     return task;
 };
+
+export const insertTask = async (task) => {
+    tasks.push(task);
+};

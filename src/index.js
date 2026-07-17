@@ -1,8 +1,12 @@
 import express from 'express';
-import { getTasks, getTask } from './controller/tasksController.js';
+import { getTasks, getTask, createTask } from './controller/tasksController.js';
 
 const app = express();
 const port = 3000;
+
+app.use(express.json());
+
+app.post('/tasks', createTask);
 
 app.get('/tasks/:id', getTask);
 
