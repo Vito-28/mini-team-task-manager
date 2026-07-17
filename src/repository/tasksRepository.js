@@ -17,3 +17,7 @@ export const editTask = async (task, title) => {
     task.title = title;
     return task;
 };
+
+export const removeTask = async (task) => {
+    tasks.splice(tasks.indexOf(task),1);
+}

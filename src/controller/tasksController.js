@@ -1,4 +1,4 @@
-import { getAllTasks, getTaskById, createTaskFromTitle, updateTaskByIdAndTitle } from "../service/tasksService.js";
+import { getAllTasks, getTaskById, createTaskFromTitle, updateTaskByIdAndTitle, deleteTaskById } from "../service/tasksService.js";
 
 export const getTasks = async (req, res) => {
     const tasks = await getAllTasks();
@@ -34,4 +34,15 @@ export const updateTask = async (req, res) => {
     }
 
     res.status(200).json(task);
+};
+
+export const deleteTask = async (req, res) => {
+    const {id} = req.params;
+    const task = await deleteTaskById(id);
+
+    if(!task){
+        return res.status(404).send("Task not found");
+    }
+
+    res.status(204).end();
 };

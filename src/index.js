@@ -1,10 +1,12 @@
 import express from 'express';
-import { getTasks, getTask, createTask, updateTask } from './controller/tasksController.js';
+import { getTasks, getTask, createTask, updateTask, deleteTask } from './controller/tasksController.js';
 
 const app = express();
 const port = 3000;
 
 app.use(express.json());
+
+app.delete('/tasks/:id', deleteTask);
 
 app.put('/tasks/:id', updateTask);
 
