@@ -12,3 +12,8 @@ export const findTaskById = async (id) => {
 export const insertTask = async (task) => {
     tasks.push(task);
 };
+
+export const editTask = async (task, title) => {
+    task.title = title;
+    return task;
+};
