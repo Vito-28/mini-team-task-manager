@@ -3,6 +3,7 @@ import { getTasks, getTask, createTask, updateTask, deleteTask } from './control
 import logger from './middlewares/loggerMiddleware.js';
 import authorization from './middlewares/authMiddleware.js';
 import validation from './middlewares/validationMiddleware.js';
+import errorHandler from './middlewares/errorMiddleware.js';
 
 const app = express();
 const port = 3000;
@@ -24,6 +25,8 @@ app.get('/tasks', authorization, getTasks);
 app.get('/', (req, res) => {
     res.send('Mini Team Task Manager API is running');
 });
+
+app.use(errorHandler);
 
 app.listen(port, () => {
     console.log(`Mini Team Task Manager App listening on port ${port}`);
