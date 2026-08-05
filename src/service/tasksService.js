@@ -1,3 +1,4 @@
+import { NotFoundError } from "../error/NotFoundError.js";
 import { findAllTasks, findTaskById, insertTask, editTask, removeTask } from "../repository/tasksRepository.js";
 
 export const getAllTasks = async () => {
@@ -7,6 +8,11 @@ export const getAllTasks = async () => {
 
 export const getTaskById = async (id) => {
     const task = await findTaskById(id);
+
+    if(!task) {
+        throw new NotFoundError();
+    }
+
     return task;
 };
 
@@ -26,7 +32,7 @@ export const updateTaskByIdAndTitle = async (id, title) => {
     const task = await findTaskById(id);
 
     if(!task){
-        return null;
+        throw new NotFoundError();
     }
 
     const newTask = await editTask(task, title);
@@ -38,7 +44,7 @@ export const deleteTaskById = async(id) => {
     const task = await findTaskById(id);
 
     if(!task){
-        return null;
+        throw new NotFoundError();
     }
 
     await removeTask(task);
