@@ -1,18 +1,18 @@
 import { getAllTasks, getTaskById, createTaskFromTitle, updateTaskByIdAndTitle, deleteTaskById } from "../service/tasksService.js";
 
-export const getTasks = async (req, res) => {
+export const getTasks = async (req, res, next) => {
 
     try {
         const tasks = await getAllTasks();
         res.status(200).json(tasks);
     } catch (error) {
         console.error(error);
-        res.status(500).send("Internal Server Error");
+        next(err);
     }
     
 };
 
-export const getTask = async (req, res) => {
+export const getTask = async (req, res, next) => {
 
     try {
         const {id} = req.params;
@@ -25,12 +25,12 @@ export const getTask = async (req, res) => {
         res.status(200).json(task);
     } catch (error) {
         console.error(error);
-        res.status(500).send("Internal Server Error");        
+        next(err);       
     }
 
 };
 
-export const createTask = async (req, res) => {
+export const createTask = async (req, res, next) => {
 
     try {
         const {title} = req.body;
@@ -39,12 +39,12 @@ export const createTask = async (req, res) => {
         res.status(201).json(task);        
     } catch (error) {
         console.error(error);
-        res.status(500).send("Internal Server Error");         
+        next(err);        
     }
 
 };
 
-export const updateTask = async (req, res) => {
+export const updateTask = async (req, res, next) => {
 
     try {
         const {id} = req.params;
@@ -59,12 +59,12 @@ export const updateTask = async (req, res) => {
         res.status(200).json(task);        
     } catch (error) {
         console.error(error);
-        res.status(500).send("Internal Server Error");         
+        next(err);        
     }
     
 };
 
-export const deleteTask = async (req, res) => {
+export const deleteTask = async (req, res, next) => {
 
     try {
         const {id} = req.params;
@@ -77,7 +77,7 @@ export const deleteTask = async (req, res) => {
         res.status(204).end();
     } catch (error) {
         console.error(error);
-        res.status(500).send("Internal Server Error");        
+        next(err);      
     }
 
 };
