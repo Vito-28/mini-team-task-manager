@@ -1,6 +1,8 @@
 import { NotFoundError } from "../error/NotFoundError.js";
 
 const errorHandler = (err, req, res, next) => {
+
+    console.error(err);
     
     if (err instanceof NotFoundError) {
         return res.status(404).json({
