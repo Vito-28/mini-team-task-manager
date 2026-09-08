@@ -1,10 +1,22 @@
-import { createTaskFromTitle, getAllTasks, getTaskById, updateTaskByIdAndTitle, deleteTaskById } from "../service/tasksService.js";
+import { createTaskFromTitle, getAllTasks, getTaskById, updateTaskByIdAndTitle, deleteTaskById, getAllTasksByUserId , getAllTasksByCompleted } from "../service/tasksService.js";
 
 export const getTasks = async (req, res, next) => {
 
     try {
-        const tasks = await getAllTasks();
-        res.status(200).json(tasks);
+        const {userId} = req.params;
+        const {completed} = req.query;
+        
+        if(userId !== undefined) {
+            const tasks = await getAllTasksByUserId(userId);
+            res.status(200).json(tasks);
+        } else if(completed !== undefined) {
+            const tasks = await getAllTasksByCompleted(completed);
+            res.status(200).json(tasks);
+        } else {
+            const tasks = await getAllTasks();
+            res.status(200).json(tasks);
+        }
+        
     } catch (error) {
         next(error);
     }

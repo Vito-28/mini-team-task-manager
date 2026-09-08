@@ -12,6 +12,8 @@ app.use(express.json());
 
 app.use(logger);
 
+app.get('/users/:userId/tasks', authorization, getTasks);
+
 app.delete('/tasks/:id', authorization, deleteTask);
 
 app.put('/tasks/:id', authorization, validation, updateTask);

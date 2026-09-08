@@ -1,5 +1,23 @@
 import pool from "../database/db.js";
 
+export const findAllTasksByCompleted = async (completed) => {
+    const result = await pool.query(
+        'SELECT * FROM tasks WHERE completed = $1',
+        [completed]
+    );
+
+    return result.rows;    
+};
+
+export const findAllTasksByUserId = async (userId) => {
+    const result = await pool.query(
+        'SELECT * FROM tasks WHERE user_id = $1',
+        [userId]
+    );
+
+    return result.rows;
+};
+
 export const findAllTasks = async () => {
 
     const result = await pool.query(
