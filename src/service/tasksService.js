@@ -1,4 +1,5 @@
 import { NotFoundError } from "../error/NotFoundError.js";
+import { UserNotFoundError } from "../error/UserNotFoundError.js";
 import { findAllTasks, findTaskById, insertTask, editTask, removeTask } from "../repository/tasksRepository.js";
 
 export const getAllTasks = async () => {
@@ -16,38 +17,36 @@ export const getTaskById = async (id) => {
     return task;
 };
 
-export const createTaskFromTitle = async (title) => {
-    const tasks = await findAllTasks();
+export const createTaskFromTitle = async (title, userId) => {
+    try {
+        return await insertTask(title, userId);
+    } catch (error) {
 
-    const nextId = tasks.length === 0 ? 1 : Math.max(...tasks.map(t => t.id)) + 1;
+        if (error.code === "23503") {
+            throw new UserNotFoundError();
+        }
 
-    const newTask = {id: nextId, title: title, completed: false};
-
-    await insertTask(newTask);
-
-    return newTask;
+        throw error;
+    }
 };
 
 export const updateTaskByIdAndTitle = async (id, title) => {
-    const task = await findTaskById(id);
+    const newTask = await editTask(id, title);
 
-    if(!task){
+    if (!newTask) {
         throw new NotFoundError();
     }
 
-    const newTask = await editTask(task, title);
 
     return newTask;
 };
 
 export const deleteTaskById = async(id) => {
-    const task = await findTaskById(id);
+    const task = await removeTask(id);
 
     if(!task){
         throw new NotFoundError();
     }
-
-    await removeTask(task);
 
     return task;
 };

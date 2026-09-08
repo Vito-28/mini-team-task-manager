@@ -27,9 +27,10 @@ export const getTask = async (req, res, next) => {
 export const createTask = async (req, res, next) => {
 
     try {
-        const {title} = req.body;
+        const {title, userId} = req.body;
     
-        const task = await createTaskFromTitle(title);
+        const task = await createTaskFromTitle(title, userId);
+
         res.status(201).json(task);
     } catch (error) {
         next(error);

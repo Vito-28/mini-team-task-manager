@@ -1,23 +1,58 @@
-import { tasks } from "../data/tasks.js";
+import pool from "../database/db.js";
 
 export const findAllTasks = async () => {
-    return tasks;
+
+    const result = await pool.query(
+        "SELECT * FROM tasks"
+    );
+
+    return result.rows;
+
 };
 
 export const findTaskById = async (id) => {
-    const task = tasks.find(t => t.id === Number(id));
-    return task;
+
+    const result = await pool.query(
+        'SELECT * FROM tasks WHERE id = $1',
+        [id]
+    );
+
+    return result.rows[0] ?? null;
+
 };
 
-export const insertTask = async (task) => {
-    tasks.push(task);
+export const insertTask = async (title, userId) => {
+
+    const result = await pool.query(
+        'INSERT INTO tasks (title, user_id) VALUES ($1, $2) RETURNING *',
+        [title, userId]
+    );
+
+    return result.rows[0] ?? null;
+
 };
 
-export const editTask = async (task, title) => {
-    task.title = title;
-    return task;
+export const editTask = async (id, title) => {
+
+    const result = await pool.query(
+        `UPDATE tasks
+        SET title = $1
+        WHERE id = $2
+        RETURNING *`,
+        [title, id]
+
+    );
+
+    return result.rows[0] ?? null;
+
 };
 
-export const removeTask = async (task) => {
-    tasks.splice(tasks.indexOf(task),1);
-}
+export const removeTask = async (id) => {
+
+    const result = await pool.query(
+        `DELETE FROM tasks WHERE id = $1 RETURNING *`, [id]
+    );
+
+    return result.rows[0] ?? null;
+    
+};

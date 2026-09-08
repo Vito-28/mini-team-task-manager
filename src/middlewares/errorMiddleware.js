@@ -1,4 +1,5 @@
 import { NotFoundError } from "../error/NotFoundError.js";
+import { UserNotFoundError } from "../error/UserNotFoundError.js";
 
 const errorHandler = (err, req, res, next) => {
 
@@ -8,7 +9,11 @@ const errorHandler = (err, req, res, next) => {
         return res.status(404).json({
             message: err.message
         });
-    }
+    }  else if (err instanceof UserNotFoundError) {
+        return res.status(404).json({
+            message: err.message
+        });
+    } 
     
     return res.status(500).json({
         message: "Internal Server Error"
