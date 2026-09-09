@@ -2,8 +2,9 @@ import express from 'express';
 import { getTasks, getTask, createTask, updateTask, deleteTask } from './controller/tasksController.js';
 import logger from './middlewares/loggerMiddleware.js';
 import authorization from './middlewares/authMiddleware.js';
-import validation from './middlewares/validationMiddleware.js';
+import { validationName, validationTitle } from './middlewares/validationMiddleware.js';
 import errorHandler from './middlewares/errorMiddleware.js';
+import { createUser, deleteUser, getUser, getUsers, updateUser } from './controller/usersController.js';
 
 const app = express();
 const port = 3000;
@@ -12,17 +13,27 @@ app.use(express.json());
 
 app.use(logger);
 
-app.get('/users/:userId/tasks', authorization, getTasks);
-
 app.delete('/tasks/:id', authorization, deleteTask);
 
-app.put('/tasks/:id', authorization, validation, updateTask);
+app.delete('/users/:id', authorization, deleteUser);
 
-app.post('/tasks', authorization, validation, createTask);
+app.put('/tasks/:id', authorization, validationTitle, updateTask);
+
+app.put('/users/:id', authorization, validationName, updateUser);
+
+app.post('/tasks', authorization, validationTitle, createTask);
+
+app.post('/users', authorization, validationName, createUser);
+
+app.get('/users/:userId/tasks', authorization, getTasks);
 
 app.get('/tasks/:id', authorization, getTask);
 
+app.get('/users/:id', authorization, getUser);
+
 app.get('/tasks', authorization, getTasks);
+
+app.get('/users', authorization, getUsers);
 
 app.get('/', (req, res) => {
     res.send('Mini Team Task Manager API is running');
