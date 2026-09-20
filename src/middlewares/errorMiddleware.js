@@ -5,6 +5,7 @@ import { TasksCategoriesNotFoundError } from "../error/TasksCategoriesNotFoundEr
 import { DuplicateInsertError } from "../error/DuplicateInsertError.js";
 import { TaskAssignedUserError } from "../error/TaskAssignedUserError.js"
 import { TaskAssignedCategoryError } from "../error/TaskAssignedCategoryError.js"
+import { DuplicateNameUserError } from "../error/DuplicateNameUserError.js";
 
 const errorHandler = (err, req, res, next) => {
 
@@ -27,6 +28,10 @@ const errorHandler = (err, req, res, next) => {
             message: err.message
         });
     } else if (err instanceof DuplicateInsertError) {
+        return res.status(409).json({
+            message: err.message
+        });
+    } else if(err instanceof DuplicateNameUserError) {
         return res.status(409).json({
             message: err.message
         });

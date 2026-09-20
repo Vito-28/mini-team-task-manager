@@ -1,6 +1,7 @@
 import { UserNotFoundError } from '../error/UserNotFoundError.js';
 import { TaskAssignedUserError } from '../error/TaskAssignedUserError.js'
 import { findAllUsers , findUserById, insertUser , editUser , removeUser } from '../repository/usersRepository.js';
+import { DuplicateNameUserError } from '../error/DuplicateNameUserError.js';
 
 export const getAllUsers = async () => {
     return await findAllUsers();
@@ -17,7 +18,17 @@ export const getUserById = async (id) => {
 };
 
 export const createUserFromName = async (name) => {
-    return await insertUser(name);
+
+    try {
+        return await insertUser(name);
+    } catch (error) {
+        if(error.code === '23505') {
+            throw new DuplicateNameUserError();
+        }
+
+        throw error;
+    }
+
 };
 
 export const updateUserByIdAndName = async (id, name) => {
