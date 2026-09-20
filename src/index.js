@@ -2,7 +2,7 @@ import express from 'express';
 import { getTasks, getTask, createTask, updateTask, deleteTask } from './controller/tasksController.js';
 import logger from './middlewares/loggerMiddleware.js';
 import authorization from './middlewares/authMiddleware.js';
-import { validationName, validationTitle } from './middlewares/validationMiddleware.js';
+import { validationName, validationTitle, validationTypeTaskIDBody } from './middlewares/validationMiddleware.js';
 import errorHandler from './middlewares/errorMiddleware.js';
 import { createUser, deleteUser, getUser, getUsers, updateUser } from './controller/usersController.js';
 import { createCategory, deleteCategory, getCategories, getCategory, updateCategory } from './controller/categoriesController.js';
@@ -37,7 +37,7 @@ app.post('/categories', authorization, validationName, createCategory);
 
 app.post('/tasks/:taskId/categories/:categoryId', authorization, addCategory);
 
-app.post('/tasks_categories', authorization, addCategories);
+app.post('/tasks_categories', authorization, validationTypeTaskIDBody, addCategories);
 
 app.get('/categories/:id/tasks', authorization, getCategoriesTasks);
 

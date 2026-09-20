@@ -18,3 +18,13 @@ export const validationName = (req, res, next) => {
     next();
 
 };
+
+export const validationTypeTaskIDBody = (req, res, next) => {
+    const {taskId} = req.body;
+
+    if(!Number.isInteger(taskId) || taskId <= 0) {
+        return res.status(400).send("Task ID Format Error");
+    }
+
+    next();
+};
