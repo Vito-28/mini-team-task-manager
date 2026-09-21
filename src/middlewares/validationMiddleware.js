@@ -40,3 +40,16 @@ export const validationTypeTaskIDParam = (req, res, next) => {
 
     next();
 };
+
+export const validationTypeCategoryID = (req, res, next) => {
+    const {categoryId} = req.params;
+
+    const parsedId = Number(categoryId);
+
+    if(!Number.isInteger(parsedId) || parsedId <= 0) {
+        return res.status(400).send("Category ID Format Error");
+    }
+
+    next();
+
+};
