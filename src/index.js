@@ -19,15 +19,15 @@ app.delete('/tasks/:taskId', authorization, validationTypeTaskIDParam, deleteTas
 
 app.delete('/users/:id', authorization, deleteUser);
 
-app.delete('/categories/:id', authorization, deleteCategory);
+app.delete('/categories/:categoryId', authorization, validationTypeCategoryID, deleteCategory);
 
-app.delete('/tasks/:taskId/categories/:categoryId', authorization, validationTypeTaskIDParam, deleteTasksCategories);
+app.delete('/tasks/:taskId/categories/:categoryId', authorization, validationTypeTaskIDParam, validationTypeCategoryID, deleteTasksCategories);
 
 app.put('/tasks/:taskId', authorization, validationTypeTaskIDParam, validationTitle, updateTask);
 
 app.put('/users/:id', authorization, validationName, updateUser);
 
-app.put('/categories/:id', authorization, validationName, updateCategory);
+app.put('/categories/:categoryId', authorization, validationTypeCategoryID, validationName, updateCategory);
 
 app.post('/tasks', authorization, validationTitle, createTask);
 
@@ -39,7 +39,7 @@ app.post('/tasks/:taskId/categories/:categoryId', authorization, validationTypeT
 
 app.post('/tasks_categories', authorization, validationTypeTaskIDBody, addCategories);
 
-app.get('/categories/:id/tasks', authorization, getCategoriesTasks);
+app.get('/categories/:categoryId/tasks', authorization, validationTypeCategoryID, getCategoriesTasks);
 
 app.get('/tasks/:taskId/categories', authorization, validationTypeTaskIDParam, getTasksCategories);
 
@@ -49,7 +49,7 @@ app.get('/tasks/:taskId', authorization, validationTypeTaskIDParam, getTask);
 
 app.get('/users/:id', authorization, getUser);
 
-app.get('/categories/:id', authorization, getCategory);
+app.get('/categories/:categoryId', authorization, validationTypeCategoryID, getCategory);
 
 app.get('/tasks', authorization, getTasks);
 
