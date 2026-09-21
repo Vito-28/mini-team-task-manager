@@ -15,15 +15,15 @@ app.use(express.json());
 
 app.use(logger);
 
-app.delete('/tasks/:id', authorization, deleteTask);
+app.delete('/tasks/:taskId', authorization, validationTypeTaskIDParam, deleteTask);
 
 app.delete('/users/:id', authorization, deleteUser);
 
 app.delete('/categories/:id', authorization, deleteCategory);
 
-app.delete('/tasks/:taskId/categories/:categoryId', authorization, deleteTasksCategories);
+app.delete('/tasks/:taskId/categories/:categoryId', authorization, validationTypeTaskIDParam, deleteTasksCategories);
 
-app.put('/tasks/:id', authorization, validationTitle, updateTask);
+app.put('/tasks/:taskId', authorization, validationTypeTaskIDParam, validationTitle, updateTask);
 
 app.put('/users/:id', authorization, validationName, updateUser);
 
@@ -41,11 +41,11 @@ app.post('/tasks_categories', authorization, validationTypeTaskIDBody, addCatego
 
 app.get('/categories/:id/tasks', authorization, getCategoriesTasks);
 
-app.get('/tasks/:id/categories', authorization, getTasksCategories);
+app.get('/tasks/:taskId/categories', authorization, validationTypeTaskIDParam, getTasksCategories);
 
 app.get('/users/:userId/tasks', authorization, getTasks);
 
-app.get('/tasks/:id', authorization, getTask);
+app.get('/tasks/:taskId', authorization, validationTypeTaskIDParam, getTask);
 
 app.get('/users/:id', authorization, getUser);
 
