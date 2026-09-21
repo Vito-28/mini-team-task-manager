@@ -2,10 +2,25 @@ export const validationTitle = (req, res, next) => {
     const { title } = req.body;
 
     if (!title || title.trim().length === 0) {
-        return res.status(400).send("Title required");
+    return res.status(400).send("Title is required");
+    }
+
+    if (title.trim().length < 6) {
+        return res.status(400).send("Title must be at least 6 characters");
     }
 
     next();
+};
+
+export const validationTypeTitle = (req, res, next) => {
+    const {title} = req.body;
+
+    if(typeof title !== "string") {
+        return res.status(400).send("Title Format Error");
+    }
+
+    next();
+
 };
 
 export const validationName = (req, res, next) => {

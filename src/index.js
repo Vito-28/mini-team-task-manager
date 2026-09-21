@@ -2,7 +2,7 @@ import express from 'express';
 import { getTasks, getTask, createTask, updateTask, deleteTask } from './controller/tasksController.js';
 import logger from './middlewares/loggerMiddleware.js';
 import authorization from './middlewares/authMiddleware.js';
-import { validationName, validationTitle, validationTypeCategoryID, validationTypeTaskIDBody, validationTypeTaskIDParam } from './middlewares/validationMiddleware.js';
+import { validationName, validationTitle, validationTypeCategoryID, validationTypeTaskIDBody, validationTypeTaskIDParam, validationTypeTitle } from './middlewares/validationMiddleware.js';
 import errorHandler from './middlewares/errorMiddleware.js';
 import { createUser, deleteUser, getUser, getUsers, updateUser } from './controller/usersController.js';
 import { createCategory, deleteCategory, getCategories, getCategory, updateCategory } from './controller/categoriesController.js';
@@ -23,13 +23,13 @@ app.delete('/categories/:categoryId', authorization, validationTypeCategoryID, d
 
 app.delete('/tasks/:taskId/categories/:categoryId', authorization, validationTypeTaskIDParam, validationTypeCategoryID, deleteTasksCategories);
 
-app.put('/tasks/:taskId', authorization, validationTypeTaskIDParam, validationTitle, updateTask);
+app.put('/tasks/:taskId', authorization, validationTypeTaskIDParam, validationTypeTitle, validationTitle, updateTask);
 
 app.put('/users/:id', authorization, validationName, updateUser);
 
 app.put('/categories/:categoryId', authorization, validationTypeCategoryID, validationName, updateCategory);
 
-app.post('/tasks', authorization, validationTitle, createTask);
+app.post('/tasks', authorization, validationTypeTitle, validationTitle, createTask);
 
 app.post('/users', authorization, validationName, createUser);
 
