@@ -28,3 +28,15 @@ export const validationTypeTaskIDBody = (req, res, next) => {
 
     next();
 };
+
+export const validationTypeTaskIDParam = (req, res, next) => {
+    const {taskId} = req.params;
+
+    const parsedId = Number(taskId);
+
+    if(!Number.isInteger(parsedId) || parsedId <= 0) {
+        return res.status(400).send("Task ID Format Error");
+    }
+
+    next();
+};
