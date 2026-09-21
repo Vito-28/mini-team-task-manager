@@ -30,6 +30,21 @@ export const validationName = (req, res, next) => {
         return res.status(400).send("Name required");
     }
 
+    if(name.trim().length < 3) {
+        return res.status(400).send("Name must be at least 3 characters");
+    }
+
+    next();
+
+};
+
+export const validationTypeName = (req, res, next) => {
+    const {name} = req.body;
+
+    if(typeof name !== "string") {
+        return res.status(400).send("Name Format Error");
+    } 
+
     next();
 
 };
