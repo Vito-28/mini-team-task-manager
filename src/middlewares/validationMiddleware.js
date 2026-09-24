@@ -83,3 +83,46 @@ export const validationTypeCategoryID = (req, res, next) => {
     next();
 
 };
+
+export const validationCategories = (req, res, next) => {
+    const {listCategoriesId} = req.body;
+
+    if(!listCategoriesId || listCategoriesId.length === 0) {
+        return res.status(400).send("List ID Categories required");
+    }
+
+    next();
+
+};
+
+export const validationTypeCategories = (req, res, next) => {
+    const { listCategoriesId } = req.body;
+
+    if(!Array.isArray(listCategoriesId)) {
+        return res.status(400).send("List ID Categories Format Error");
+    }
+
+    next();
+};
+
+export const validationTypeIDCategories = (req, res, next) => {
+    const { listCategoriesId } = req.body;
+
+    for (const id of listCategoriesId) {
+        if(!Number.isInteger(id) || id <= 0) {
+            return res.status(400).send("ID Categories Format Error");
+        }
+    }
+
+    next();
+};
+
+export const validationTypeCompleted = (req, res, next) => {
+    const { completed } = req.query;
+
+    if(completed !== undefined && completed !== "true" && completed !== "false") {
+        return res.status(400).send("Completed Format Error");
+    }
+
+    next();
+};
