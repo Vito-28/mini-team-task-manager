@@ -1,9 +1,9 @@
 import pool from "../database/db.js";
 
-export const findAllTasksByCompleted = async (completed) => {
+export const findAllTasksByUserIdAndCompleted = async (userId, completed) => {
     const result = await pool.query(
-        'SELECT * FROM tasks WHERE completed = $1',
-        [completed]
+        'SELECT * FROM tasks WHERE completed = $1 AND user_id = $2',
+        [completed, userId]
     );
 
     return result.rows;    

@@ -1,6 +1,6 @@
 import { NotFoundError } from "../error/NotFoundError.js";
 import { UserNotFoundError } from "../error/UserNotFoundError.js";
-import { findAllTasks, findTaskById, insertTask, editTask, removeTask, findAllTasksByUserId, findAllTasksByCompleted } from "../repository/tasksRepository.js";
+import { findAllTasks, findTaskById, insertTask, editTask, removeTask, findAllTasksByUserId, findAllTasksByUserIdAndCompleted } from "../repository/tasksRepository.js";
 
 export const getAllTasks = async () => {
     const tasks = await findAllTasks();
@@ -12,8 +12,8 @@ export const getAllTasksByUserId = async (userId) => {
     return tasks;
 };
 
-export const getAllTasksByCompleted = async (completed) => {
-    const tasks = await findAllTasksByCompleted(completed);
+export const getAllTasksByCompleted = async (userId, completed) => {
+    const tasks = await findAllTasksByUserIdAndCompleted(userId, completed);
     return tasks;
 };
 
