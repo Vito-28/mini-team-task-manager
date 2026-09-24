@@ -49,6 +49,28 @@ export const validationTypeName = (req, res, next) => {
 
 };
 
+export const validationPassword = (req, res, next) => {
+    const {password} = req.body;
+
+    if(!password || password.length < 8) {
+        return res.status(400).send("Password must be at least 8 characters");
+    }
+
+    next();
+
+};
+
+export const validationTypePassword = (req, res, next) => {
+    const {password} = req.body;
+
+    if(typeof password !== "string") {
+        return res.status(400).send("Password Format Error");
+    }
+
+    next();
+
+};
+
 export const validationTypeTaskIDBody = (req, res, next) => {
     const {taskId} = req.body;
 
