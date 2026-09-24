@@ -1,4 +1,5 @@
 import { NotFoundError } from "../error/NotFoundError.js";
+import { TaskAssignedCategoriesError } from "../error/TaskAssignedCategoriesError.js";
 import { UserNotFoundError } from "../error/UserNotFoundError.js";
 import { findAllTasks, findTaskById, insertTask, editTask, removeTask, findAllTasksByUserId, findAllTasksByUserIdAndCompleted } from "../repository/tasksRepository.js";
 
