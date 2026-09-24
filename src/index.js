@@ -1,8 +1,9 @@
 import express from 'express';
+import { registerUser, loginUser } from './controller/authController.js';
 import { getTasks, getTask, createTask, updateTask, deleteTask } from './controller/tasksController.js';
 import logger from './middlewares/loggerMiddleware.js';
 import authorization from './middlewares/authMiddleware.js';
-import { validationCategories, validationName, validationTitle, validationTypeCategories, validationTypeCategoryID, validationTypeCompleted, validationTypeIDCategories, validationTypeName, validationTypeTaskIDBody, validationTypeTaskIDParam, validationTypeTitle } from './middlewares/validationMiddleware.js';
+import { validationCategories, validationName, validationPassword, validationTitle, validationTypeCategories, validationTypeCategoryID, validationTypeCompleted, validationTypeIDCategories, validationTypeName, validationTypePassword, validationTypeTaskIDBody, validationTypeTaskIDParam, validationTypeTitle } from './middlewares/validationMiddleware.js';
 import errorHandler from './middlewares/errorMiddleware.js';
 import { createUser, deleteUser, getUser, getUsers, updateUser } from './controller/usersController.js';
 import { createCategory, deleteCategory, getCategories, getCategory, updateCategory } from './controller/categoriesController.js';
@@ -14,6 +15,14 @@ const port = 3000;
 app.use(express.json());
 
 app.use(logger);
+
+//routes sign in and sign up
+
+app.post('/auth/register', validationTypeName, validationName, validationTypePassword, validationPassword, registerUser);
+
+app.post('/auth/login', validationTypeName, validationName, validationTypePassword, validationPassword, loginUser);
+
+//other routes
 
 app.delete('/tasks/:taskId', authorization, validationTypeTaskIDParam, deleteTask);
 
