@@ -1,11 +1,12 @@
 CREATE TABLE categories (
     id SERIAL PRIMARY KEY,
-    name VARCHAR NOT NULL UNIQUE
+    name VARCHAR NOT NULL UNIQUE,
 );
 
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,
-    name VARCHAR NOT NULL
+    name VARCHAR NOT NULL UNIQUE,
+    password VARCHAR NOT NULL
 );
 
 CREATE TABLE tasks (
