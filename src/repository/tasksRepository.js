@@ -64,12 +64,11 @@ export const editTask = async (id, title, userId) => {
     return result.rows[0] ?? null;
 };
 
-export const removeTask = async (id) => {
+export const removeTask = async (id, userId) => {
 
     const result = await pool.query(
-        `DELETE FROM tasks WHERE id = $1 RETURNING *`, [id]
+        `DELETE FROM tasks WHERE id = $1 AND user_id = $2 RETURNING *`, [id, userId]
     );
 
     return result.rows[0] ?? null;
-    
 };

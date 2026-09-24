@@ -67,8 +67,9 @@ export const updateTask = async (req, res, next) => {
 export const deleteTask = async (req, res, next) => {
 
     try {
-        const {id} = req.params;
-        await deleteTaskById(id);
+        const {taskId} = req.params;
+        const userId = req.user.id;
+        await deleteTaskById(taskId, userId);
 
         res.status(204).end();       
     } catch (error) {

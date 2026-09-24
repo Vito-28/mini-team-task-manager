@@ -7,6 +7,7 @@ import { TaskAssignedUserError } from "../error/TaskAssignedUserError.js"
 import { TaskAssignedCategoryError } from "../error/TaskAssignedCategoryError.js"
 import { DuplicateNameUserError } from "../error/DuplicateNameUserError.js";
 import { InvalidCredentialsError } from "../error/InvalidCredentialsError.js";
+import { TaskAssignedCategoriesError } from "../error/TaskAssignedCategoriesError.js";
 
 const errorHandler = (err, req, res, next) => {
 
@@ -41,6 +42,10 @@ const errorHandler = (err, req, res, next) => {
             message: err.message
         });
     }  else if (err instanceof TaskAssignedCategoryError) {
+        return res.status(409).json({
+            message: err.message
+        });
+    } else if (err instanceof TaskAssignedCategoriesError) {
         return res.status(409).json({
             message: err.message
         });
