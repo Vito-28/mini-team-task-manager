@@ -50,10 +50,11 @@ export const createTask = async (req, res, next) => {
 export const updateTask = async (req, res, next) => {
 
     try {
-        const {id} = req.params;
+        const {taskId} = req.params;
         const {title} = req.body;
+        const userId = req.user.id;
 
-        const task = await updateTaskByIdAndTitle(id, title);
+        const task = await updateTaskByIdAndTitle(taskId, title, userId);
 
         res.status(200).json(task);        
     } catch (error) {

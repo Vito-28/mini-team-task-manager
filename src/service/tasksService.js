@@ -40,8 +40,9 @@ export const createTaskFromTitle = async (title, userId) => {
     }
 };
 
-export const updateTaskByIdAndTitle = async (id, title) => {
-    const newTask = await editTask(id, title);
+export const updateTaskByIdAndTitle = async (id, title, userId) => {
+
+    const newTask = await editTask(id, title, userId);
 
     if (!newTask) {
         throw new NotFoundError();

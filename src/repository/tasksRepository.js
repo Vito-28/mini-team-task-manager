@@ -50,19 +50,18 @@ export const insertTask = async (title, userId) => {
 
 };
 
-export const editTask = async (id, title) => {
+export const editTask = async (id, title, userId) => {
 
     const result = await pool.query(
         `UPDATE tasks
         SET title = $1
-        WHERE id = $2
+        WHERE id = $2 AND user_id = $3
         RETURNING *`,
-        [title, id]
+        [title, id, userId]
 
     );
 
     return result.rows[0] ?? null;
-
 };
 
 export const removeTask = async (id) => {
