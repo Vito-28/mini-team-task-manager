@@ -6,6 +6,7 @@ import { DuplicateInsertError } from "../error/DuplicateInsertError.js";
 import { TaskAssignedUserError } from "../error/TaskAssignedUserError.js"
 import { TaskAssignedCategoryError } from "../error/TaskAssignedCategoryError.js"
 import { DuplicateNameUserError } from "../error/DuplicateNameUserError.js";
+import { InvalidCredentialsError } from "../error/InvalidCredentialsError.js";
 
 const errorHandler = (err, req, res, next) => {
 
@@ -43,7 +44,11 @@ const errorHandler = (err, req, res, next) => {
         return res.status(409).json({
             message: err.message
         });
-    } 
+    } else if (err instanceof InvalidCredentialsError) {
+        return res.status(401).json({
+            message: err.message
+        });
+    }
     
     return res.status(500).json({
         message: "Internal Server Error"
