@@ -35,7 +35,8 @@ export const getTask = async (req, res, next) => {
 export const createTask = async (req, res, next) => {
 
     try {
-        const {title, userId} = req.body;
+        const {title} = req.body;
+        const userId = req.user.id;
     
         const task = await createTaskFromTitle(title, userId);
 
