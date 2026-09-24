@@ -51,12 +51,24 @@ export const updateTaskByIdAndTitle = async (id, title) => {
     return newTask;
 };
 
-export const deleteTaskById = async(id) => {
-    const task = await removeTask(id);
+export const deleteTaskById = async(id, userId) => {
 
-    if(!task){
-        throw new NotFoundError();
+    try {
+        const task = await removeTask(id, userId);
+
+        if(!task){
+            throw new NotFoundError();
+        }
+
+        return task;
+    } catch (error) {
+        
+        if(error.code === "23503" && error.constraint === "fk_tasks") {
+            throw new TaskAssignedCategoriesError();
+        }
+
+        throw error;
+
     }
 
-    return task;
 };
