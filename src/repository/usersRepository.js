@@ -30,6 +30,24 @@ export const insertUser = async (name) => {
 
 };
 
+export const findUserByNameForAuthentication = async (name) => {
+    const result = await pool.query(
+        'SELECT id, name, password FROM users WHERE name = $1',
+        [name]
+    );
+
+    return result.rows[0] ?? null;
+};
+
+export const insert = async (name, password) => {
+    const result = await pool.query(
+        'INSERT INTO users (name, password) VALUES ($1, $2) RETURNING id, name',
+        [name, password]
+    );
+
+    return result.rows[0] ?? null;
+};
+
 export const editUser = async (id, name) => {
 
     const result = await pool.query(
