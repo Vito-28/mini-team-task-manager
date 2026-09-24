@@ -17,8 +17,8 @@ export const getAllTasksByCompleted = async (userId, completed) => {
     return tasks;
 };
 
-export const getTaskById = async (id) => {
-    const task = await findTaskById(id);
+export const getTaskById = async (id, userId) => {
+    const task = await findTaskById(id, userId);
 
     if(!task) {
         throw new NotFoundError();

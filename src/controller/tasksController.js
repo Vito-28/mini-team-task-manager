@@ -21,8 +21,9 @@ export const getTasks = async (req, res, next) => {
 export const getTask = async (req, res, next) => {
 
     try {
-        const {id} = req.params;
-        const task = await getTaskById(id);
+        const {taskId} = req.params;
+        const userId = req.user.id;
+        const task = await getTaskById(taskId, userId);
 
         res.status(200).json(task);
     } catch (error) {

@@ -28,11 +28,11 @@ export const findAllTasks = async () => {
 
 };
 
-export const findTaskById = async (id) => {
+export const findTaskById = async (id, userId) => {
 
     const result = await pool.query(
-        'SELECT * FROM tasks WHERE id = $1',
-        [id]
+        'SELECT * FROM tasks WHERE id = $1 AND user_id = $2',
+        [id, userId]
     );
 
     return result.rows[0] ?? null;
