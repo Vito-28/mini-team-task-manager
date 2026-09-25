@@ -3,10 +3,19 @@ import { TasksCategoriesNotFoundError } from '../error/TasksCategoriesNotFoundEr
 import { DuplicateInsertError } from '../error/DuplicateInsertError.js';
 import { NotFoundError } from '../error/NotFoundError.js';
 import { CategoryNotFoundError } from '../error/CategoryNotFoundError.js';
+import { findTaskById } from '../repository/tasksRepository.js';
+import { TaskMatchUserError } from '../error/TaskMatchUserError.js';
 
-export const addCategoryToTheTask = async (taskId, categoryId) => {
+export const addCategoryToTheTask = async (taskId, userId, categoryId) => {
 
     try {
+
+        const task = await findTaskById(taskId, userId);
+
+        if(!task) {
+            throw new TaskMatchUserError();
+        }
+
         return await insertCategoryToTheTask(taskId, categoryId);
     } catch (error) {
 
@@ -25,17 +34,19 @@ export const addCategoryToTheTask = async (taskId, categoryId) => {
 
 };
 
-export const addCategoriesToTheTask = async (taskId, listIdCategories) => {
+export const addCategoriesToTheTask = async (userId, taskId, listIdCategories) => {
 
     try {
+        const placeholder = listIdCategories.map((item, index) => `($1 , $${(index) + 2})`).join(', ');
 
-        const placeholder = listIdCategories.map((item, index) => `($1 , $${Number(index) + 2})`).join(', ');
+        const task = await findTaskById(taskId, userId);
 
-        console.log(placeholder)
+        if(!task) {
+            throw new TaskMatchUserError();
+        }    
 
         return await insertCategoriesToTheTask(taskId, listIdCategories, placeholder);
-
-    } catch(error) {
+    } catch (error) {
 
         if(error.code === '23505') {
             throw new DuplicateInsertError();

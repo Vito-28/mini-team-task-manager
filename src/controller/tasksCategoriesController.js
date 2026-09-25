@@ -4,8 +4,10 @@ export const addCategory = async (req, res, next) => {
 
     try {
         const {taskId, categoryId} = req.params;
+
+        const userId = req.user.id;
     
-        const relationCategoryTask = await addCategoryToTheTask(taskId, categoryId);
+        const relationCategoryTask = await addCategoryToTheTask(taskId, userId, categoryId);
 
         res.status(201).json(relationCategoryTask);
     } catch (error) {
@@ -18,8 +20,10 @@ export const addCategories = async (req, res, next) => {
 
     try {
         const {taskId, listCategoriesId} = req.body;
+
+        const userId = req.user.id;
     
-        const relationsCategoryTask = await addCategoriesToTheTask(taskId, listCategoriesId);
+        const relationsCategoryTask = await addCategoriesToTheTask(userId, taskId, listCategoriesId);
 
         res.status(201).json(relationsCategoryTask);
     } catch (error) {
