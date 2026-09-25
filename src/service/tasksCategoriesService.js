@@ -74,8 +74,8 @@ export const getTasksCategoriesByTaskId = async (id, userId) => {
     return await findTasksCategoriesByTaskId(id, userId);
 };
 
-export const getTasksCategoriesByCategoryId = async (id) => {
-    return await findTasksCategoriesByCategoryId(id);
+export const getTasksCategoriesByCategoryId = async (id, userId) => {
+    return await findTasksCategoriesByCategoryId(id, userId);
 };
 
 export const deleteTasksCategoriesById = async(taskId, categoryId) => {

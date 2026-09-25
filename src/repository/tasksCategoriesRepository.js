@@ -30,11 +30,11 @@ export const findTasksCategoriesByTaskId = async (id, userId) => {
     return result.rows;
 };
 
-export const findTasksCategoriesByCategoryId = async (id) => {
+export const findTasksCategoriesByCategoryId = async (id, userId) => {
 
     const result = await pool.query(
-        'SELECT tasks.id, tasks.title, tasks.completed, tasks.user_id FROM tasks INNER JOIN tasks_categories ON tasks_categories.task_id = tasks.id WHERE tasks_categories.category_id = ($1)',
-        [id]
+        'SELECT tasks.id, tasks.title, tasks.completed, tasks.user_id FROM tasks INNER JOIN tasks_categories ON tasks_categories.task_id = tasks.id WHERE tasks_categories.category_id = ($1) AND tasks.user_id =($2)',
+        [id, userId]
     );
 
     return result.rows;

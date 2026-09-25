@@ -51,9 +51,11 @@ export const getTasksCategories = async (req, res, next) => {
 export const getCategoriesTasks = async (req, res, next) => {
 
     try {
-        const {id} = req.params;
+        const {categoryId} = req.params;
 
-        const relationsCategoryTask = await getTasksCategoriesByCategoryId(id);
+        const userId = req.user.id;
+
+        const relationsCategoryTask = await getTasksCategoriesByCategoryId(categoryId, userId);
 
         res.status(200).json(relationsCategoryTask);
     } catch (error) {
