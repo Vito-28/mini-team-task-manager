@@ -1,10 +1,10 @@
 -- Users
-INSERT INTO users (name)
+INSERT INTO users (name, password)
 VALUES
-    ('Mario Rossi'),
-    ('Luca Bianchi'),
-    ('Giulia Verdi'),
-    ('Anna Neri');
+    ('Mario Rossi', '$2b$10$ZF1xUcJwL2pLz2Eb9ZGy4e62hWmQVM9SB0jFS7hJpTz3UtQfypxHu'),
+    ('Luca Bianchi', '$2b$10$ZF1xUcJwL2pLz2Eb9ZGy4e62hWmQVM9SB0jFS7hJpTz3UtQfypxHu'),
+    ('Giulia Verdi', '$2b$10$ZF1xUcJwL2pLz2Eb9ZGy4e62hWmQVM9SB0jFS7hJpTz3UtQfypxHu'),
+    ('Anna Neri', '$2b$10$ZF1xUcJwL2pLz2Eb9ZGy4e62hWmQVM9SB0jFS7hJpTz3UtQfypxHu');
 
 -- Categories
 INSERT INTO categories (name)
@@ -43,4 +43,3 @@ VALUES
     (6, 5),
     (7, 1),
     (8, 1);
-
