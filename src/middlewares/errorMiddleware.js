@@ -8,6 +8,7 @@ import { TaskAssignedCategoryError } from "../error/TaskAssignedCategoryError.js
 import { DuplicateNameUserError } from "../error/DuplicateNameUserError.js";
 import { InvalidCredentialsError } from "../error/InvalidCredentialsError.js";
 import { TaskAssignedCategoriesError } from "../error/TaskAssignedCategoriesError.js";
+import { TaskMatchUserError } from "../error/TaskMatchUserError.js";
 
 const errorHandler = (err, req, res, next) => {
 
@@ -51,6 +52,10 @@ const errorHandler = (err, req, res, next) => {
         });
     } else if (err instanceof InvalidCredentialsError) {
         return res.status(401).json({
+            message: err.message
+        });
+    }  else if (err instanceof TaskMatchUserError) {
+        return res.status(403).json({
             message: err.message
         });
     }
