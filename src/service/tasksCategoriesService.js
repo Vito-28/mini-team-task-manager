@@ -64,8 +64,14 @@ export const addCategoriesToTheTask = async (userId, taskId, listIdCategories) =
 
 };
 
-export const getTasksCategoriesByTaskId = async (id) => {
-    return await findTasksCategoriesByTaskId(id);
+export const getTasksCategoriesByTaskId = async (id, userId) => {
+    const task = await findTaskById(id, userId);
+
+    if(!task) {
+        throw new TaskMatchUserError();
+    }
+
+    return await findTasksCategoriesByTaskId(id, userId);
 };
 
 export const getTasksCategoriesByCategoryId = async (id) => {

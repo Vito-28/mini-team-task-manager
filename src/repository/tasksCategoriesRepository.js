@@ -20,11 +20,11 @@ export const insertCategoriesToTheTask = async (taskId, listCategoriesId, placeh
     return result.rows ?? null;
 };
 
-export const findTasksCategoriesByTaskId = async (id) => {
+export const findTasksCategoriesByTaskId = async (id, userId) => {
 
     const result = await pool.query(
-        'SELECT categories.id, categories.name FROM categories INNER JOIN tasks_categories ON tasks_categories.category_id = categories.id WHERE tasks_categories.task_id = ($1)',
-        [id]
+        'SELECT categories.id, categories.name FROM categories INNER JOIN tasks_categories ON tasks_categories.category_id = categories.id INNER JOIN tasks on tasks.id = tasks_categories.task_id  WHERE tasks_categories.task_id = ($1) AND tasks.user_id = ($2);',
+        [id, userId]
     );
 
     return result.rows;
