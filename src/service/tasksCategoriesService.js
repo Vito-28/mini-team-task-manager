@@ -78,7 +78,14 @@ export const getTasksCategoriesByCategoryId = async (id, userId) => {
     return await findTasksCategoriesByCategoryId(id, userId);
 };
 
-export const deleteTasksCategoriesById = async(taskId, categoryId) => {
+export const deleteTasksCategoriesById = async(userId, taskId, categoryId) => {
+
+
+    const task = await findTaskById(taskId, userId);
+
+    if(!task) {
+        throw new TaskMatchUserError();
+    }
 
     const taskCategory = await removeTasksCategories(taskId, categoryId);
 

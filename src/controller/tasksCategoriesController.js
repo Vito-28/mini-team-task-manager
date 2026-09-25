@@ -68,7 +68,10 @@ export const deleteTasksCategories = async (req, res, next) => {
 
     try {
         const {taskId, categoryId} = req.params;
-        await deleteTasksCategoriesById(taskId, categoryId);
+
+        const userId = req.user.id;
+
+        await deleteTasksCategoriesById(userId, taskId, categoryId);
 
         res.status(204).end();       
     } catch (error) {
