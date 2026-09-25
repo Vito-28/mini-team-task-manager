@@ -5,7 +5,6 @@ import logger from './middlewares/loggerMiddleware.js';
 import authorization from './middlewares/authMiddleware.js';
 import { validationCategories, validationName, validationPassword, validationTitle, validationTypeCategories, validationTypeCategoryID, validationTypeCompleted, validationTypeIDCategories, validationTypeName, validationTypePassword, validationTypeTaskIDBody, validationTypeTaskIDParam, validationTypeTitle } from './middlewares/validationMiddleware.js';
 import errorHandler from './middlewares/errorMiddleware.js';
-import { createUser, deleteUser, getUser, getUsers, updateUser } from './controller/usersController.js';
 import { createCategory, deleteCategory, getCategories, getCategory, updateCategory } from './controller/categoriesController.js';
 import { addCategories, addCategory, deleteTasksCategories, getCategoriesTasks, getTasksCategories } from './controller/tasksCategoriesController.js';
 
@@ -22,47 +21,39 @@ app.post('/auth/register', validationTypeName, validationName, validationTypePas
 
 app.post('/auth/login', validationTypeName, validationName, validationTypePassword, validationPassword, loginUser);
 
-//other routes
+//routes tasks
 
-app.delete('/tasks/:taskId', authorization, validationTypeTaskIDParam, deleteTask);
+app.get('/tasks', authorization, validationTypeCompleted, getTasks);
 
-app.delete('/users/:id', authorization, deleteUser);
-
-app.delete('/categories/:categoryId', authorization, validationTypeCategoryID, deleteCategory);
-
-app.delete('/tasks/:taskId/categories/:categoryId', authorization, validationTypeTaskIDParam, validationTypeCategoryID, deleteTasksCategories);
-
-app.put('/tasks/:taskId', authorization, validationTypeTaskIDParam, validationTypeTitle, validationTitle, updateTask);
-
-app.put('/users/:id', authorization, validationName, updateUser);
-
-app.put('/categories/:categoryId', authorization, validationTypeCategoryID, validationTypeName, validationName, updateCategory);
+app.get('/tasks/:taskId', authorization, validationTypeTaskIDParam, getTask);
 
 app.post('/tasks', authorization, validationTypeTitle, validationTitle, createTask);
 
-app.post('/users', authorization, validationName, createUser);
+app.put('/tasks/:taskId', authorization, validationTypeTaskIDParam, validationTypeTitle, validationTitle, updateTask);
 
-app.post('/categories', authorization, validationTypeName, validationName, createCategory);
+app.delete('/tasks/:taskId', authorization, validationTypeTaskIDParam, deleteTask);
+
+// routes tasks_categories
 
 app.post('/tasks/:taskId/categories/:categoryId', authorization, validationTypeTaskIDParam, validationTypeCategoryID, addCategory);
-
-app.post('/tasks_categories', authorization, validationTypeTaskIDBody, validationTypeCategories, validationCategories, validationTypeIDCategories, addCategories);
 
 app.get('/categories/:categoryId/tasks', authorization, validationTypeCategoryID, getCategoriesTasks);
 
 app.get('/tasks/:taskId/categories', authorization, validationTypeTaskIDParam, getTasksCategories);
 
-app.get('/users/:userId/tasks', authorization, getTasks);
+app.delete('/tasks/:taskId/categories/:categoryId', authorization, validationTypeTaskIDParam, validationTypeCategoryID, deleteTasksCategories);
 
-app.get('/tasks/:taskId', authorization, validationTypeTaskIDParam, getTask);
+app.post('/tasks_categories', authorization, validationTypeTaskIDBody, validationTypeCategories, validationCategories, validationTypeIDCategories, addCategories);
 
-app.get('/users/:id', authorization, getUser);
+// routes categories
+
+app.delete('/categories/:categoryId', authorization, validationTypeCategoryID, deleteCategory);
+
+app.put('/categories/:categoryId', authorization, validationTypeCategoryID, validationTypeName, validationName, updateCategory);
+
+app.post('/categories', authorization, validationTypeName, validationName, createCategory);
 
 app.get('/categories/:categoryId', authorization, validationTypeCategoryID, getCategory);
-
-app.get('/tasks', authorization, validationTypeCompleted, getTasks);
-
-app.get('/users', authorization, getUsers);
 
 app.get('/categories', authorization, getCategories);
 
