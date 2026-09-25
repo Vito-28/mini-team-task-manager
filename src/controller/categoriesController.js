@@ -14,8 +14,8 @@ export const getCategories = async (req, res, next) => {
 export const getCategory = async (req, res, next) => {
 
     try {
-        const {id} = req.params;
-        const category = await getCategoryById(id);
+        const {categoryId} = req.params;
+        const category = await getCategoryById(categoryId);
         
         res.status(200).json(category);
     } catch (error) {
@@ -41,10 +41,10 @@ export const createCategory = async (req, res, next) => {
 export const updateCategory = async (req, res, next) => {
 
     try {
-        const {id} = req.params;
+        const {categoryId} = req.params;
         const {name} = req.body;
 
-        const category = await updateCategoryByIdAndName(id, name);
+        const category = await updateCategoryByIdAndName(categoryId, name);
 
         res.status(200).json(category);        
     } catch (error) {
@@ -56,8 +56,8 @@ export const updateCategory = async (req, res, next) => {
 export const deleteCategory = async (req, res, next) => {
 
     try {
-        const {id} = req.params;
-        await deleteCategoryById(id);
+        const {categoryId} = req.params;
+        await deleteCategoryById(categoryId);
 
         res.status(204).end();       
     } catch (error) {
