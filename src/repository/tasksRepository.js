@@ -18,16 +18,6 @@ export const findAllTasksByUserId = async (userId) => {
     return result.rows;
 };
 
-export const findAllTasks = async () => {
-
-    const result = await pool.query(
-        "SELECT * FROM tasks"
-    );
-
-    return result.rows;
-
-};
-
 export const findTaskById = async (id, userId) => {
 
     const result = await pool.query(

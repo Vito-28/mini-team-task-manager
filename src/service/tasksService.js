@@ -1,12 +1,7 @@
 import { NotFoundError } from "../error/NotFoundError.js";
 import { TaskAssignedCategoriesError } from "../error/TaskAssignedCategoriesError.js";
 import { UserNotFoundError } from "../error/UserNotFoundError.js";
-import { findAllTasks, findTaskById, insertTask, editTask, removeTask, findAllTasksByUserId, findAllTasksByUserIdAndCompleted } from "../repository/tasksRepository.js";
-
-export const getAllTasks = async () => {
-    const tasks = await findAllTasks();
-    return tasks;
-};
+import { findTaskById, insertTask, editTask, removeTask, findAllTasksByUserId, findAllTasksByUserIdAndCompleted } from "../repository/tasksRepository.js";
 
 export const getAllTasksByUserId = async (userId) => {
     const tasks = await findAllTasksByUserId(userId);
