@@ -1,50 +1,39 @@
 # Mini Team Task Manager
 
-REST API built with Node.js, Express and PostgreSQL.
+REST API backend built with **Node.js, Express and PostgreSQL**.
 
-This project is developed incrementally to simulate the evolution of a real backend application while learning backend development fundamentals, REST API design, relational databases and layered architecture.
+The project was developed incrementally to practice backend development fundamentals, REST API design, relational databases, layered architecture, input validation, error handling and authentication.
 
-## Volume 1 - Express Fundamentals
+The current version includes **JWT-based authentication and user-based resource authorization**.
 
-Implemented:
+---
 
-* Express server setup
-* REST API architecture
-* Controllers
-* Services
+## Features
+
+* REST API
+* Express.js server
+* Layered architecture
+* PostgreSQL integration
 * Repository pattern
 * CRUD operations
-* Route parameters
-* Query parameters
-* HTTP status codes
-* Custom middlewares
-
-  * Logger
-  * Authentication
-  * Request validation
-* Global error handling
-* Custom error classes
-* Error propagation with `next(err)`
-
-## Volume 2 - PostgreSQL Integration
-
-Implemented:
-
-* PostgreSQL database integration
-* PostgreSQL connection pool
-* SQL repositories
-* CRUD operations with PostgreSQL
+* Request validation
+* Custom middleware
+* Centralized error handling
+* Custom application errors
 * Parameterized SQL queries
-* Primary keys
-* Foreign keys
-* `NOT NULL` constraints
-* `DEFAULT` values
-* One-to-many relationship between users and tasks
-* Many-to-many relationship between tasks and categories
-* SQL `JOIN` queries
-* Task filtering by user
+* PostgreSQL constraints
+* One-to-many relationships
+* Many-to-many relationships
+* JWT authentication
+* Password hashing with bcrypt
+* User registration and login
+* Protected routes
+* Task ownership
+* Task/category ownership validation
 * Task filtering by completion status
-* PostgreSQL constraint error handling
+* PostgreSQL constraint error mapping
+
+---
 
 ## Technologies
 
@@ -53,28 +42,37 @@ Implemented:
 * JavaScript
 * PostgreSQL
 * `pg`
+* `bcrypt`
+* `jsonwebtoken`
+* `dotenv`
+
+---
 
 ## Architecture
 
 The application follows a layered architecture:
 
 ```text
+HTTP Request
+     ↓
 Controller
-    ↓
+     ↓
 Service
-    ↓
+     ↓
 Repository
-    ↓
+     ↓
 PostgreSQL
 ```
 
 ### Controller
 
-Handles HTTP requests and responses.
+Responsible for handling HTTP requests and responses.
 
 Responsibilities:
 
-* Read request parameters, query parameters and body
+* Read route parameters
+* Read query parameters
+* Read request bodies
 * Call the appropriate service
 * Return HTTP responses
 * Forward errors to the global error handler
@@ -86,22 +84,32 @@ Contains application and business logic.
 Responsibilities:
 
 * Coordinate application operations
+* Validate business conditions
 * Handle application-specific errors
-* Keep business logic separate from HTTP and database concerns
+* Enforce ownership rules
+* Translate relevant database errors into application errors
 
 ### Repository
 
-Handles data persistence.
+Responsible for data persistence.
 
 Responsibilities:
 
 * Execute SQL queries
 * Communicate with PostgreSQL
+* Use parameterized queries
 * Return database results to the service layer
 
-### Database
+### Middleware
 
-PostgreSQL is accessed through a connection pool using the `pg` library.
+The application uses middleware for:
+
+* Request logging
+* JWT authentication
+* Input validation
+* Global error handling
+
+---
 
 ## Project Structure
 
@@ -114,11 +122,36 @@ mini-team-task-manager/
 │
 ├── src/
 │   ├── controller/
+│   │   ├── authController.js
+│   │   ├── categoriesController.js
+│   │   ├── tasksCategoriesController.js
+│   │   └── tasksController.js
+│   │
 │   ├── service/
+│   │   ├── authService.js
+│   │   ├── categoriesService.js
+│   │   ├── tasksCategoriesService.js
+│   │   ├── tasksService.js
+│   │   └── usersService.js
+│   │
 │   ├── repository/
+│   │   ├── categoriesRepository.js
+│   │   ├── tasksCategoriesRepository.js
+│   │   ├── tasksRepository.js
+│   │   └── usersRepository.js
+│   │
 │   ├── database/
+│   │   └── db.js
+│   │
 │   ├── middlewares/
+│   │   ├── authMiddleware.js
+│   │   ├── errorMiddleware.js
+│   │   ├── loggerMiddleware.js
+│   │   └── validationMiddleware.js
+│   │
 │   ├── error/
+│   │   └── custom error classes
+│   │
 │   └── index.js
 │
 ├── .env.example
@@ -128,9 +161,395 @@ mini-team-task-manager/
 └── README.md
 ```
 
-## Database
+---
 
-The project uses PostgreSQL with the following entities:
+# Authentication
+
+Authentication is implemented using **JWT**.
+
+Passwords are never stored in plaintext.
+
+During registration:
+
+```text
+Password
+   ↓
+bcrypt.hash()
+   ↓
+Password hash
+   ↓
+PostgreSQL
+```
+
+During login:
+
+```text
+Password
+   ↓
+bcrypt.compare()
+   ↓
+Credentials verified
+   ↓
+JWT generated
+```
+
+Protected requests use the following header:
+
+```http
+Authorization: Bearer <token>
+```
+
+The JWT contains the authenticated user's identity through the `sub` claim.
+
+The authorization middleware verifies the token and exposes the authenticated user through:
+
+```js
+req.user
+```
+
+Example:
+
+```js
+req.user = {
+    id: decoded.sub,
+    name: decoded.name
+};
+```
+
+---
+
+## Authentication Endpoints
+
+### Register
+
+```http
+POST /auth/register
+```
+
+Body:
+
+```json
+{
+  "name": "Mario Rossi",
+  "password": "password123"
+}
+```
+
+The password must be at least 8 characters long.
+
+Successful response:
+
+```http
+201 Created
+```
+
+The password is hashed with bcrypt before being stored.
+
+---
+
+### Login
+
+```http
+POST /auth/login
+```
+
+Body:
+
+```json
+{
+  "name": "Mario Rossi",
+  "password": "password123"
+}
+```
+
+Successful response:
+
+```json
+{
+  "message": "Login successful",
+  "token": "<JWT>"
+}
+```
+
+---
+
+# Tasks
+
+All task endpoints require JWT authentication.
+
+### Get authenticated user's tasks
+
+```http
+GET /tasks
+```
+
+Only tasks belonging to the authenticated user are returned.
+
+### Filter tasks by completion status
+
+```http
+GET /tasks?completed=true
+```
+
+or:
+
+```http
+GET /tasks?completed=false
+```
+
+The `completed` query parameter accepts only:
+
+```text
+true
+false
+```
+
+### Get task by ID
+
+```http
+GET /tasks/:taskId
+```
+
+### Create task
+
+```http
+POST /tasks
+```
+
+Body:
+
+```json
+{
+  "title": "Learn TypeScript"
+}
+```
+
+The `userId` is not supplied by the client.
+
+The authenticated user's ID is obtained from:
+
+```js
+req.user.id
+```
+
+### Update task
+
+```http
+PUT /tasks/:taskId
+```
+
+Body:
+
+```json
+{
+  "title": "Learn TypeScript and Node.js"
+}
+```
+
+Only the owner of the task can update it.
+
+### Delete task
+
+```http
+DELETE /tasks/:taskId
+```
+
+Only the owner of the task can delete it.
+
+A task cannot be deleted while it is still associated with categories.
+
+---
+
+# Categories
+
+All category endpoints require JWT authentication.
+
+### Get all categories
+
+```http
+GET /categories
+```
+
+### Get category by ID
+
+```http
+GET /categories/:categoryId
+```
+
+### Create category
+
+```http
+POST /categories
+```
+
+Body:
+
+```json
+{
+  "name": "Study"
+}
+```
+
+### Update category
+
+```http
+PUT /categories/:categoryId
+```
+
+Body:
+
+```json
+{
+  "name": "Programming"
+}
+```
+
+### Delete category
+
+```http
+DELETE /categories/:categoryId
+```
+
+A category cannot be deleted while it is associated with tasks.
+
+---
+
+# Task Categories
+
+Tasks and categories have a many-to-many relationship.
+
+The relationship is implemented through the `tasks_categories` junction table.
+
+### Add a category to a task
+
+```http
+POST /tasks/:taskId/categories/:categoryId
+```
+
+Only the owner of the task can create the relationship.
+
+### Add multiple categories to a task
+
+```http
+POST /tasks_categories
+```
+
+Body:
+
+```json
+{
+  "taskId": 1,
+  "listCategoriesId": [1, 3, 4]
+}
+```
+
+Only the owner of the task can create these relationships.
+
+### Get categories associated with a task
+
+```http
+GET /tasks/:taskId/categories
+```
+
+Only the owner of the task can access its categories.
+
+### Get tasks associated with a category
+
+```http
+GET /categories/:categoryId/tasks
+```
+
+Only tasks belonging to the authenticated user are returned.
+
+### Remove a category from a task
+
+```http
+DELETE /tasks/:taskId/categories/:categoryId
+```
+
+Only the owner of the task can remove the relationship.
+
+---
+
+# Validation
+
+The API validates several types of input before reaching the controllers.
+
+Examples include:
+
+* Task title type and minimum length
+* User name type and minimum length
+* Password type and minimum length
+* Task ID format
+* Category ID format
+* `completed` query parameter
+* Category ID arrays
+
+Invalid input returns:
+
+```http
+400 Bad Request
+```
+
+---
+
+# Error Handling
+
+The application uses custom error classes and a centralized error handler.
+
+Examples include:
+
+* `NotFoundError`
+* `UserNotFoundError`
+* `CategoryNotFoundError`
+* `TasksCategoriesNotFoundError`
+* `DuplicateInsertError`
+* `DuplicateNameUserError`
+* `InvalidCredentialsError`
+* `TaskAssignedUserError`
+* `TaskAssignedCategoryError`
+* `TaskAssignedCategoriesError`
+* `TaskMatchUserError`
+
+The service layer translates relevant PostgreSQL constraint errors into application-specific errors.
+
+Examples:
+
+```text
+PostgreSQL 23505
+      ↓
+DuplicateNameUserError
+      ↓
+409 Conflict
+```
+
+```text
+PostgreSQL 23503
+      ↓
+TaskAssignedCategoriesError
+      ↓
+409 Conflict
+```
+
+Authorization failures return:
+
+```http
+403 Forbidden
+```
+
+Authentication failures return:
+
+```http
+401 Unauthorized
+```
+
+---
+
+# Database
+
+The project uses PostgreSQL.
+
+Database entities:
 
 ```text
 users
@@ -144,232 +563,88 @@ tasks
 categories
 ```
 
-The many-to-many relationship between tasks and categories is implemented through the `tasks_categories` junction table.
+The many-to-many relationship is implemented through:
 
-### Database setup
-
-The SQL files required to create and populate the database are available in the `database/` directory.
-
-Execute `database/schema.sql` to create the database structure.
-
-Then execute `database/seed.sql` to insert sample data.
-
-## API Endpoints
-
-All protected endpoints require authorization.
-
-### Tasks
-
-#### Get all tasks
-
-```http
-GET /tasks
-```
-
-#### Get tasks by completion status
-
-```http
-GET /tasks?completed=true
-```
-
-The `completed` query parameter can be used to filter tasks by completion status.
-
-#### Get tasks by user
-
-```http
-GET /users/:userId/tasks
-```
-
-#### Get task by ID
-
-```http
-GET /tasks/:id
-```
-
-#### Create task
-
-```http
-POST /tasks
-```
-
-Body:
-
-```json
-{
-  "title": "Learn PostgreSQL",
-  "userId": 1
-}
-```
-
-#### Update task
-
-```http
-PUT /tasks/:id
-```
-
-Body:
-
-```json
-{
-  "title": "Learn PostgreSQL and Express"
-}
-```
-
-#### Delete task
-
-```http
-DELETE /tasks/:id
+```text
+tasks_categories
 ```
 
 ### Users
 
-#### Get all users
-
-```http
-GET /users
+```text
+id
+name
+password
 ```
 
-#### Get user by ID
+The `name` column is unique.
 
-```http
-GET /users/:id
+The `password` column stores bcrypt password hashes.
+
+### Tasks
+
+```text
+id
+title
+completed
+user_id
 ```
 
-#### Create user
-
-```http
-POST /users
-```
-
-Body:
-
-```json
-{
-  "name": "Mario Rossi"
-}
-```
-
-#### Update user
-
-```http
-PUT /users/:id
-```
-
-Body:
-
-```json
-{
-  "name": "Mario Bianchi"
-}
-```
-
-#### Delete user
-
-```http
-DELETE /users/:id
-```
+Each task belongs to a user.
 
 ### Categories
 
-#### Get all categories
-
-```http
-GET /categories
+```text
+id
+name
 ```
 
-#### Get category by ID
-
-```http
-GET /categories/:id
-```
-
-#### Create category
-
-```http
-POST /categories
-```
-
-Body:
-
-```json
-{
-  "name": "Work"
-}
-```
-
-#### Update category
-
-```http
-PUT /categories/:id
-```
-
-Body:
-
-```json
-{
-  "name": "Personal"
-}
-```
-
-#### Delete category
-
-```http
-DELETE /categories/:id
-```
+Category names are unique.
 
 ### Task Categories
 
-Tasks and categories have a many-to-many relationship.
-
-#### Add a category to a task
-
-```http
-POST /tasks/:taskId/categories/:categoryId
+```text
+task_id
+category_id
 ```
 
-#### Add multiple categories to a task
+The pair `(task_id, category_id)` is the primary key.
 
-```http
-POST /tasks_categories
+---
+
+# Database Setup
+
+The SQL files required to create and populate the database are located in:
+
+```text
+database/
 ```
 
-#### Get categories associated with a task
+Create the database structure using:
 
-```http
-GET /tasks/:id/categories
+```text
+database/schema.sql
 ```
 
-#### Get tasks associated with a category
+Then populate it using:
 
-```http
-GET /categories/:id/tasks
+```text
+database/seed.sql
 ```
 
-#### Remove a category from a task
+The development seed contains four users.
 
-```http
-DELETE /tasks/:taskId/categories/:categoryId
+For the seeded users, the development password is:
+
+```text
+password123
 ```
 
-## Error Handling
+This password is intended only for local development/testing.
 
-The application uses custom error classes and a centralized global error handler.
+---
 
-Examples include:
-
-* `NotFoundError`
-* `UserNotFoundError`
-* `CategoryNotFoundError`
-* `TasksCategoriesNotFoundError`
-* `DuplicateInsertError`
-* `TaskAssignedUserError`
-* `TaskAssignedCategoryError`
-
-PostgreSQL constraint errors are translated into application-specific errors before reaching the global error handler.
-
-## Environment Variables
-
-Database configuration is managed through environment variables.
+# Environment Variables
 
 Create a `.env` file based on `.env.example`.
 
@@ -381,19 +656,24 @@ DB_HOST=localhost
 DB_NAME=task_manager
 DB_PASSWORD=your_password
 DB_PORT=5432
+
+JWT_SECRET=your_secret_key
+JWT_EXPIRES_IN=5m
 ```
 
 The `.env` file must not be committed to the repository.
 
-## Installation
+---
 
-Clone the repository and install the dependencies:
+# Installation
+
+Clone the repository and install dependencies:
 
 ```bash
 npm install
 ```
 
-Configure the PostgreSQL database and environment variables.
+Configure PostgreSQL and the environment variables.
 
 Create the database structure:
 
@@ -401,7 +681,7 @@ Create the database structure:
 database/schema.sql
 ```
 
-Populate the database with sample data:
+Populate the database:
 
 ```text
 database/seed.sql
@@ -419,15 +699,92 @@ The API runs on:
 http://localhost:3000
 ```
 
-## Next Volumes
+---
 
-Planned improvements:
+# Development Approach
 
+The project was developed incrementally.
+
+Each feature was implemented through small changes involving:
+
+1. Code modification
+2. Manual testing
+3. Error verification
+4. `git diff`
+5. Commit
+6. Push
+
+The goal was not only to build an API, but to understand the reasoning behind the backend architecture and the interaction between:
+
+```text
+HTTP
+ ↓
+Express
+ ↓
+Middleware
+ ↓
+Controller
+ ↓
+Service
+ ↓
+Repository
+ ↓
+PostgreSQL
+```
+
+---
+
+# Current Status
+
+## Phase 1 — JavaScript Backend
+
+Completed:
+
+* Node.js backend fundamentals
+* Express
+* REST API
+* PostgreSQL
+* SQL relationships
+* Layered architecture
+* Repository pattern
+* Input validation
+* Error handling
+* Custom errors
+* bcrypt password hashing
 * JWT authentication
-* Improved input validation
-* Automated testing
-* API documentation
-* Further PostgreSQL optimization
-* Additional backend features
-* Further architectural improvements
+* Protected routes
+* Task ownership
+* Task/category ownership
+* PostgreSQL constraint handling
 
+The JavaScript backend is currently considered the completed first phase of the project.
+
+---
+
+# Next Phase
+
+## Phase 2 — TypeScript
+
+The next development phase will focus on TypeScript.
+
+The objective is not simply to convert the existing JavaScript code to TypeScript.
+
+The goal is to understand:
+
+* Why TypeScript exists
+* Static type checking
+* Type inference
+* Explicit types
+* Interfaces
+* Type aliases
+* Unions
+* Narrowing
+* Generics
+* Function typing
+* Type-safe backend code
+* TypeScript with Node.js
+* TypeScript with Express
+* TypeScript project configuration
+* Compilation from TypeScript to JavaScript
+
+The TypeScript phase will initially be developed separately from this JavaScript project in order to understand the language before introducing it into a larger backend codebase.
