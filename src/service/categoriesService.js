@@ -1,6 +1,7 @@
 import { findAllCategories , findCategoryById , insertCategory , editCategory , removeCategory} from '../repository/categoriesRepository.js';
 import { CategoryNotFoundError } from '../error/CategoryNotFoundError.js';
 import { TaskAssignedCategoryError } from '../error/TaskAssignedCategoryError.js';
+import { DuplicateNameCategoryError } from '../error/DuplicateNameCategoryError.js';
 
 export const getAllCategories = async () => {
     return await findAllCategories();
@@ -17,7 +18,15 @@ export const getCategoryById = async (id) => {
 };
 
 export const createCategoryFromName = async (name) => {
-    return await insertCategory(name);
+
+    try {
+        return await insertCategory(name);        
+    } catch (error) {
+        if(error.code === '23505') {
+            throw new DuplicateNameCategoryError();
+        }
+    }
+
 };
 
 export const updateCategoryByIdAndName = async (id, name) => {

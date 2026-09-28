@@ -9,6 +9,7 @@ import { DuplicateNameUserError } from "../error/DuplicateNameUserError.js";
 import { InvalidCredentialsError } from "../error/InvalidCredentialsError.js";
 import { TaskAssignedCategoriesError } from "../error/TaskAssignedCategoriesError.js";
 import { TaskMatchUserError } from "../error/TaskMatchUserError.js";
+import { DuplicateNameCategoryError } from "../error/DuplicateNameCategoryError.js";
 
 const errorHandler = (err, req, res, next) => {
 
@@ -35,6 +36,10 @@ const errorHandler = (err, req, res, next) => {
             message: err.message
         });
     } else if(err instanceof DuplicateNameUserError) {
+        return res.status(409).json({
+            message: err.message
+        });
+    } else if(err instanceof DuplicateNameCategoryError) {
         return res.status(409).json({
             message: err.message
         });
