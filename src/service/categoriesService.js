@@ -31,14 +31,21 @@ export const createCategoryFromName = async (name) => {
 
 export const updateCategoryByIdAndName = async (id, name) => {
 
-    const newCategory = await editCategory(id, name);
+    try {
+        const newCategory = await editCategory(id, name);
 
-    if (!newCategory) {
-        throw new CategoryNotFoundError();
+        if (!newCategory) {
+            throw new CategoryNotFoundError();
+        }
+
+
+        return newCategory;
+    } catch (error) {
+        if(error.code === '23505') {
+            throw new DuplicateNameCategoryError();
+        }        
     }
 
-
-    return newCategory;
 };
 
 export const deleteCategoryById = async(id) => {
